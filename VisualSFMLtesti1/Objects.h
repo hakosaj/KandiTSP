@@ -6,6 +6,7 @@
 #include <vector>
 #include <Windows.h> 
 #include <string>
+#include <queue>
 #include <tuple>
 #include <math.h>
 
@@ -29,43 +30,75 @@ sf::Text RandomizeRoutesText;
 sf::Text randomizeRoutesOnceText;
 sf::Text changeDotcountText;
 sf::Text exitButtonText;
+sf::Text printBestRoutesButtonText;
+sf::Text changeRandomizerRateButtonText;
+sf::Text cycleButtonText;
+
 
 //Titles for different values
 sf::Text CurrentDistanceText;
-
+sf::Text AdjacencyRepresentationText;
+sf::Text CityListText;
 sf::Text CurrentBestText;
 sf::Text randomizerRateText;
 sf::Text CurrentPopulationText;
+sf::Text CycleCounterText;
 
 //Value texts
 
 sf::Text currentDistance;
+sf::Text AdjacencyRepresentation;
+sf::Text CityList;
 sf::Text CurrentBestNumberText;
 sf::Text randomizerSpeedNumberText;
 sf::Text CurrentPopulationNumberText;
+
+
+//More value texts: best 4 routes
+sf::Text bestRoutes1;
+sf::Text bestRoutes2;
+sf::Text bestRoutes3;
+sf::Text bestRoutes4;
+sf::Text bestRoutes5;
+sf::Text bestRoutes6;
+sf::Text bestRoutes7;
+sf::Text bestRoutes8;
 
 //Other or testing
 sf::Text CurrentBestSolutionsText;
 
 
 
+
+
+
+
 sf::Text bestRoutesNumber;
-std::vector <sf::CircleShape> dots;
-std::vector <float> dotsX(dotcount, 0);
-std::vector <float> dotsY(dotcount, 0);
 
-std::vector <std::tuple<std::vector <float>, std::vector <float>>> routes(0);
-std::vector <std::tuple<std::vector <float>, std::vector <float>>> bestRoutes(1);
-std::vector<float> RouteDistances(1);
 
-std::vector <int> gridlinesHorizontal{ 20,270 };
-std::vector <int> gridlinesVertical{ 470,500,530,560,590,620, 650, 680, 710, 740 };
+//std::vector <std::tuple<std::vector <float>, std::vector <float>>> routes(0);
+//std::vector <std::tuple<std::vector <float>, std::vector <float>>> bestRoutes(1);
+//std::vector<float> RouteDistances(1);
+
+
+
+//form for queue: distance,x,y
+//form: id, x, y
+
+
+
+
+std::vector <int> gridlinesHorizontal{ 20,200,380 };
+std::vector <int> gridlinesVertical{ 470,500,530,560,590,620,650 };
 sf::CircleShape testicircle(circlesize);
 sf::CircleShape startcircle(startcirclesize);
 sf::RectangleShape reunat(sf::Vector2f(width - leftEdge - outlinet, height - outlinet * 2));
-sf::RectangleShape runbutton(sf::Vector2f(buttonwidth, buttonheight));
+sf::RectangleShape generateButton(sf::Vector2f(buttonwidth, buttonheight));
 sf::RectangleShape randomizebutton(sf::Vector2f(buttonwidth, buttonheight));
 sf::RectangleShape randomizeOnceButton(sf::Vector2f(buttonwidth, buttonheight));
 sf::RectangleShape showBestRouteButton(sf::Vector2f(buttonwidth, buttonheight));
+sf::RectangleShape printBestRoutesButton(sf::Vector2f(buttonwidth, buttonheight));
 sf::RectangleShape changeDotcountButton(sf::Vector2f(buttonwidth, buttonheight));
+sf::RectangleShape changeRandomizerRateButton(sf::Vector2f(buttonwidth, buttonheight));
 sf::RectangleShape exitButton(sf::Vector2f(buttonwidth, buttonheight));
+sf::RectangleShape cycleButton(sf::Vector2f(buttonwidth, buttonheight));

@@ -28,6 +28,6 @@ public:
 
 private:
 	sf::Vertex vertices[4];
-	float thickness;
+	double thickness;
 	sf::Color color;
 };

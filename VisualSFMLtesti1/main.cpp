@@ -8,124 +8,25 @@
 #include <string>
 #include <tuple>
 #include <math.h>
+#include <queue>
 #include "constants.h"
 #include "Objects.h"
 #include "AuxilaryClasses.h"
 
-
-
+std::vector<Tour> tours;
+std::vector<City> cities;
+std::vector<Tour> auxtours;
 
 int randomCoordinates(char identifier)
 {
 	int output;
 
-	if (identifier == 'X') output = 510 + (rand() % static_cast<int>(1490 - 510 + 1));
-	else output = 10 + (rand() % static_cast<int>(830 - 20 + 1));
-	
+	if (identifier == 'X') output = 510 + (rand() % static_cast<int>(width-10 - 510 + 1));
+	else output = 10 + (rand() % static_cast<int>(height - 20 + 1));
+
 	return output;
 
 }
-
-
-
-float euclideanDistance(float x1, float x2, float y1, float y2)
-{
-	float dist = std::sqrt(std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2));
-	return dist;
-}
-
-
-float tourDistance(std::vector <float> dotsX, std::vector <float> dotsY)
-{
-	float currentDist = 0;
-
-
-
-	for (int i = 0; i < dotcount - 1; i++)
-	{
-		currentDist += euclideanDistance(dotsX[i], dotsX[i + 1], dotsY[i], dotsY[i + 1]);
-	}
-	currentDist += euclideanDistance(dotsX[0], dotsX[dotcount - 1], dotsY[0], dotsY[dotcount - 1]);
-
-
-	return currentDist;
-}
-
-std::tuple<std::vector <float>, std::vector <float>> findBestRoute(std::vector <std::tuple<std::vector <float>, std::vector <float>>>)
-{
-	float routedistance = 1000000000;
-	int bestIndex = 0;
-	for (int a = 0; a < size(routes); a++)
-	{
-		auto vectors = routes[a];
-		std::vector<float> XVector = std::get<0>(vectors);
-		std::vector<float> YVector = std::get<1>(vectors);
-		if (tourDistance(XVector, YVector) < routedistance)
-		{
-			routedistance = tourDistance(XVector, YVector);
-			bestIndex = a;
-
-		}
-		
-		
-		
-	}
-	routedistance = 100000000;
-	return routes[bestIndex];
-
-
-}
-
-
-
-void getBestRoutes(std::vector <std::tuple<std::vector <float>, std::vector <float>>>)
-	{
-	int spotcounter = 10;
-	int routesDistanceIndex = 0;
-	float currentSpotDistance = 100000000;
-	
-	
-
-	for (int a = 0; a < routes.size(); a++)
-		{
-		auto vectors = routes[a];
-		std::vector<float> XVector = std::get<0>(vectors);
-		std::vector<float> YVector = std::get<1>(vectors);
-
-		RouteDistances.push_back(tourDistance(XVector, YVector));
-		}
-	std::sort(RouteDistances.begin(),RouteDistances.end());
-
-
-
-	}
-
-
-std::tuple<std::vector <float>, std::vector <float>> randomize(std::vector <float> dotsX, std::vector <float> dotsY)
-{
-	srand(time(NULL));
-	for (int i = 0; i < dotcount - 1; i++)
-	{
-		int index1 = 0;
-		int index2 = 0;
-		while (index1 == index2)
-		{
-			index1 = 1 + (rand() % static_cast<int>(dotcount-1));
-			index2 = 1 + (rand() % static_cast<int>(dotcount-1));
-		}
-
-			 std::iter_swap(dotsX.begin() + index1, dotsX.begin() + index2);
-			 std::iter_swap(dotsY.begin() + index1, dotsY.begin() + index2);
-	}
-	popsize += 1;
-	routes.push_back(std::make_tuple(dotsX, dotsY));
-	return std::make_tuple(dotsX, dotsY);
-
-}
-
-
-
-
 void initializeElements()
 {
 	TSPText.setFont(font);
@@ -159,7 +60,7 @@ void initializeElements()
 	CurrentBestNumberText.setPosition(10, 360 + VerticalOffset);
 
 	CurrentBestText.setFont(font);
-	CurrentBestText.setString("Current best distance");
+	CurrentBestText.setString("Best distance");
 	CurrentBestText.setCharacterSize(18);
 	CurrentBestText.setFillColor(sf::Color::Black);
 	CurrentBestText.setPosition(10, 340 + VerticalOffset);
@@ -172,7 +73,7 @@ void initializeElements()
 	currentDistance.setPosition(10, 290 + VerticalOffset);
 
 	randomizerRateText.setFont(font);
-	randomizerRateText.setString("Current randomizer rate (ms/member)");
+	randomizerRateText.setString("Randomizer rate");
 	randomizerRateText.setCharacterSize(18);
 	randomizerRateText.setFillColor(sf::Color::Black);
 	randomizerRateText.setPosition(10, 390 + VerticalOffset);
@@ -183,7 +84,7 @@ void initializeElements()
 	randomizerSpeedNumberText.setPosition(10, 410 + VerticalOffset);
 
 	CurrentPopulationText.setFont(font);
-	CurrentPopulationText.setString("Current population size");
+	CurrentPopulationText.setString("Population size");
 	CurrentPopulationText.setCharacterSize(18);
 	CurrentPopulationText.setFillColor(sf::Color::Black);
 	CurrentPopulationText.setPosition(10, 440 + VerticalOffset);
@@ -195,10 +96,35 @@ void initializeElements()
 
 
 	CurrentBestSolutionsText.setFont(font);
-	CurrentBestSolutionsText.setString("Current best solutions");
+	CurrentBestSolutionsText.setString("Fittest solutions");
 	CurrentBestSolutionsText.setCharacterSize(18);
 	CurrentBestSolutionsText.setFillColor(sf::Color::Black);
 	CurrentBestSolutionsText.setPosition(20, 500 + VerticalOffset);
+
+
+	AdjacencyRepresentationText.setFont(font);
+	AdjacencyRepresentationText.setString("Adjacency repres.");
+	AdjacencyRepresentationText.setCharacterSize(18);
+	AdjacencyRepresentationText.setFillColor(sf::Color::Black);
+	AdjacencyRepresentationText.setPosition(250, 390 + VerticalOffset);
+
+
+
+	AdjacencyRepresentation.setFont(font);
+	AdjacencyRepresentation.setCharacterSize(18);
+	AdjacencyRepresentation.setFillColor(sf::Color::Black);
+	AdjacencyRepresentation.setPosition(250, 410);
+
+	CityListText.setFont(font);
+	CityListText.setString("City list");
+	CityListText.setCharacterSize(18);
+	CityListText.setFillColor(sf::Color::Black);
+	CityListText.setPosition(250, 340 + VerticalOffset);
+
+	CityList.setFont(font);
+	CityList.setCharacterSize(18);
+	CityList.setFillColor(sf::Color::Black);
+	CityList.setPosition(250, 360);
 
 
 	bestRoutesNumber.setFont(font);
@@ -206,37 +132,78 @@ void initializeElements()
 	bestRoutesNumber.setFillColor(sf::Color::Black);
 
 
+	CycleCounterText.setFont(font);
+	CycleCounterText.setCharacterSize(18);
+	CycleCounterText.setFillColor(sf::Color::Black);
+	CycleCounterText.setPosition(300, 260);
+
+
+	//Best routes
+	bestRoutes1.setFont(font);
+	bestRoutes1.setCharacterSize(18);
+	bestRoutes1.setFillColor(sf::Color::Black);
+
+	bestRoutes2.setFont(font);
+	bestRoutes2.setCharacterSize(18);
+	bestRoutes2.setFillColor(sf::Color::Black);
+	
+	bestRoutes3.setFont(font);
+	bestRoutes3.setCharacterSize(18);
+	bestRoutes3.setFillColor(sf::Color::Black);
+	
+	bestRoutes4.setFont(font);
+	bestRoutes4.setCharacterSize(18);
+	bestRoutes4.setFillColor(sf::Color::Black);
+
+	bestRoutes5.setFont(font);
+	bestRoutes5.setCharacterSize(18);
+	bestRoutes5.setFillColor(sf::Color::Black);
+
+	bestRoutes6.setFont(font);
+	bestRoutes6.setCharacterSize(18);
+	bestRoutes6.setFillColor(sf::Color::Black);
+
+	bestRoutes7.setFont(font);
+	bestRoutes7.setCharacterSize(18);
+	bestRoutes7.setFillColor(sf::Color::Black);
+
+	bestRoutes8.setFont(font);
+	bestRoutes8.setCharacterSize(18);
+	bestRoutes8.setFillColor(sf::Color::Black);
+	
 
 
 
 
 
 
-	//BUTTONS AND THEIR TEXTS. MODIFY POSITIONS BY VerticalOffset
+
+
+	// TEXTS. MODIFY POSITIONS BY VerticalOffset
 
 
 
 	RunSimulationButtonText.setFont(font);
-	RunSimulationButtonText.setString("Run simulation");
+	RunSimulationButtonText.setString("Generate");
 	RunSimulationButtonText.setCharacterSize(18);
 	RunSimulationButtonText.setFillColor(sf::Color::Black);
 	RunSimulationButtonText.setPosition(buttonGridHorizontal1 + 1, buttonGridVertical1 + textButtonOffset + VerticalOffset);
 
 	RandomizeRoutesText.setFont(font);
-	RandomizeRoutesText.setString("Randomize ");
+	RandomizeRoutesText.setString("Run ");
 	RandomizeRoutesText.setCharacterSize(18);
 	RandomizeRoutesText.setFillColor(sf::Color::Black);
 	RandomizeRoutesText.setPosition(buttonGridHorizontal1 + 1, buttonGridVertical2 + textButtonOffset + VerticalOffset);
 
 
 	showBestRouteText.setFont(font);
-	showBestRouteText.setString("Show best");
+	showBestRouteText.setString("Show shortest");
 	showBestRouteText.setCharacterSize(18);
 	showBestRouteText.setFillColor(sf::Color::Black);
 	showBestRouteText.setPosition(161, 101 + VerticalOffset);
 
 	randomizeRoutesOnceText.setFont(font);
-	randomizeRoutesOnceText.setString("Once ");
+	randomizeRoutesOnceText.setString("Run once ");
 	randomizeRoutesOnceText.setCharacterSize(18);
 	randomizeRoutesOnceText.setFillColor(sf::Color::Black);
 	randomizeRoutesOnceText.setPosition(161, 161 + VerticalOffset);
@@ -255,11 +222,47 @@ void initializeElements()
 	exitButtonText.setPosition(buttonGridHorizontal2 + 1, buttonGridVertical3 + textButtonOffset + VerticalOffset);
 
 
+	printBestRoutesButtonText.setFont(font);
+	printBestRoutesButtonText.setString("Print shortest");
+	printBestRoutesButtonText.setCharacterSize(18);
+	printBestRoutesButtonText.setFillColor(sf::Color::Black);
+	printBestRoutesButtonText.setPosition(buttonGridHorizontal3 + 1, buttonGridVertical1 + textButtonOffset + VerticalOffset);
+
+	changeRandomizerRateButtonText.setFont(font);
+	changeRandomizerRateButtonText.setString("Change RRate");
+	changeRandomizerRateButtonText.setCharacterSize(18);
+	changeRandomizerRateButtonText.setFillColor(sf::Color::Black);
+	changeRandomizerRateButtonText.setPosition(buttonGridHorizontal3 + 1, buttonGridVertical2 + textButtonOffset + VerticalOffset);
+
+	cycleButtonText.setFont(font);
+	cycleButtonText.setString("Cycle routes");
+	cycleButtonText.setCharacterSize(18);
+	cycleButtonText.setFillColor(sf::Color::Black);
+	cycleButtonText.setPosition(buttonGridHorizontal3 + 1, buttonGridVertical3 + textButtonOffset + VerticalOffset);
+
+
+
+
 
 }
 
 
-void initializeShapesDots() {
+void initializeDots() {
+
+
+	for (int i = 0; i < dotcount; i++)
+	{
+		float xcoord = randomCoordinates('X');
+		float ycoord = randomCoordinates('Y');
+		cities.push_back(City(i,xcoord,ycoord));
+	}
+
+
+}
+
+
+
+void initializeShapes() {
 
 
 	// set shape properties
@@ -271,52 +274,136 @@ void initializeShapesDots() {
 
 	// set and calculate dots
 
-	dots.reserve(dotcount);
-	dots.resize(dotcount);
-	dotsX.reserve(dotcount);
-	dotsY.reserve(dotcount);
 
-	for (int i = 0; i < dotcount; i++)
+	testicircle.setFillColor(windowColor);
+	testicircle.setOutlineThickness(3);
+	testicircle.setOutlineColor(sf::Color::Black);
+
+	startcircle.setFillColor(windowColor);
+	startcircle.setOutlineThickness(3);
+	startcircle.setOutlineColor(sf::Color::Red);
+
+
+	//Button positions
+	generateButton.setFillColor(sf::Color::Red);
+	generateButton.setPosition(buttonGridHorizontal1, buttonGridVertical1 + VerticalOffset);
+
+	randomizebutton.setFillColor(sf::Color::Red);
+	randomizebutton.setPosition(buttonGridHorizontal1, buttonGridVertical2 + VerticalOffset);
+
+	randomizeOnceButton.setFillColor(sf::Color::Red);
+	randomizeOnceButton.setPosition(buttonGridHorizontal2, buttonGridVertical2 + VerticalOffset);
+
+	showBestRouteButton.setFillColor(sf::Color::Red);
+	showBestRouteButton.setPosition(buttonGridHorizontal2, buttonGridVertical1 + VerticalOffset);
+
+	changeDotcountButton.setFillColor(sf::Color::Red);
+	changeDotcountButton.setPosition(buttonGridHorizontal1, buttonGridVertical3 + VerticalOffset);
+
+	exitButton.setFillColor(sf::Color::Red);
+	exitButton.setPosition(buttonGridHorizontal2, buttonGridVertical3 + VerticalOffset);
+
+	printBestRoutesButton.setFillColor(sf::Color::Red);
+	printBestRoutesButton.setPosition(buttonGridHorizontal3, buttonGridVertical1 + VerticalOffset);
+
+	changeRandomizerRateButton.setFillColor(sf::Color::Red);
+	changeRandomizerRateButton.setPosition(buttonGridHorizontal3, buttonGridVertical2 + VerticalOffset);
+
+	cycleButton.setFillColor(sf::Color::Red);
+	cycleButton.setPosition(buttonGridHorizontal3, buttonGridVertical3 + VerticalOffset);
+
+
+
+	//FIttest tour texts
+	bestRoutes1.setPosition(gridlinesHorizontal[0], gridlinesVertical[2]);
+	bestRoutes2.setPosition(gridlinesHorizontal[0], gridlinesVertical[3]);
+	bestRoutes3.setPosition(gridlinesHorizontal[0], gridlinesVertical[4]);
+	bestRoutes4.setPosition(gridlinesHorizontal[0], gridlinesVertical[5]);
+	bestRoutes5.setPosition(gridlinesHorizontal[1], gridlinesVertical[2]);
+	bestRoutes6.setPosition(gridlinesHorizontal[1], gridlinesVertical[3]);
+	bestRoutes7.setPosition(gridlinesHorizontal[1], gridlinesVertical[4]);
+	bestRoutes8.setPosition(gridlinesHorizontal[1], gridlinesVertical[5]);
+
+
+
+	int mousecharter = 0;
+
+
+}
+
+
+
+//Cities on siis nykyiset pisteet
+//cintour on tourin member
+void randomizeDots()
+{
+	cities.resize(dotcount, City(0, 0, 0));
+	for (int i = 0; i <= dotcount - 1; i++)
 	{
-		dotsX[i] = randomCoordinates('X');
-		dotsY[i] = randomCoordinates('Y');
+		popsize = 0;
+		cities[i].x  = randomCoordinates('X');
+		cities[i].y = randomCoordinates('Y');
+		cities[i].id = i;
+		bestdist = 100000;
 	}
 
+}
 
+
+
+Tour randomizeRoute(Tour currenttour)
+{
+	std::vector<City> a = currenttour.cintour;
+	std::random_shuffle(a.begin() + 1, a.end());
+	tours.push_back(a);
+	return a;
+
+}
+
+
+
+void sortTours() {
+	std::sort(tours.begin(), tours.end());
+}
+
+/*
+Tour optimizeSubtour(Tour auxtour)
+{
+	Tour bestTour = auxtour;
+	float currentFitness = 10000000;
+	do {
+		if (currentFitness > bestTour.dist) {
+			currentFitness = bestTour.dist;
+		}
+	} while (std::next_permutation(bestTour.cintour.begin(), bestTour.cintour.end()));
+
+	return bestTour;
+}
+*/
+
+/*
+void KLHeuristic(int splits = 3) 
+{
+	int split1 = 1;
+	int split2 = 5;
+	int split3 = 10;
+	int split4 = 14;
 	
-		testicircle.setFillColor(windowColor);
-		testicircle.setOutlineThickness(3);
-		testicircle.setOutlineColor(sf::Color::Black);
 
-		startcircle.setFillColor(windowColor);
-		startcircle.setOutlineThickness(3);
-		startcircle.setOutlineColor(sf::Color::Cyan);
+}
+*/
+
+void printBestRoutes() {
 
 
-
-		runbutton.setFillColor(sf::Color::Red);
-		runbutton.setPosition(20, 90 + VerticalOffset);
-
-		randomizebutton.setFillColor(sf::Color::Red);
-		randomizebutton.setPosition(20, 150 + VerticalOffset);
-
-		randomizeOnceButton.setFillColor(sf::Color::Red);
-		randomizeOnceButton.setPosition(160, 150 + VerticalOffset);
-
-		showBestRouteButton.setFillColor(sf::Color::Red);
-		showBestRouteButton.setPosition(160, 90 + VerticalOffset);
-
-		changeDotcountButton.setFillColor(sf::Color::Red);
-		changeDotcountButton.setPosition(20, 210 + VerticalOffset);
-
-		exitButton.setFillColor(sf::Color::Red);
-		exitButton.setPosition(buttonGridHorizontal2, buttonGridVertical3 + VerticalOffset);
-
-
-
-		int mousecharter = 0;
-
-
+	bestRoutes1.setString(std::to_string(tours[0].dist));
+	bestRoutes2.setString(std::to_string(tours[1].dist));
+	bestRoutes3.setString(std::to_string(tours[2].dist));
+	bestRoutes4.setString(std::to_string(tours[3].dist));
+	bestRoutes5.setString(std::to_string(tours[4].dist));
+	bestRoutes6.setString(std::to_string(tours[5].dist));
+	bestRoutes7.setString(std::to_string(tours[6].dist));
+	bestRoutes8.setString(std::to_string(tours[7].dist));
 }
 
 
@@ -334,32 +421,35 @@ bool buttonPressed(sf::RectangleShape rect, sf::Event event)
 
 }
 
-
-
-
-
-
 int main()
 {
 
 
 
 
-
 	// create the window
-	sf::RenderWindow window(sf::VideoMode(width, height), "Hakosalo_Genetic_TSP");
+	sf::RenderWindow window(sf::VideoMode(width, height), "Genetic TSP GUI - Current pointcount: "+ std::to_string(dotcount));
 
 	// init text
 	font.loadFromFile("arial.ttf");
 
 	initializeElements();
-	initializeShapesDots();
+	initializeShapes();
+	initializeDots();
+	
+	
 
 
-
+	Tour currentTour = Tour(cities);
 	// run the program as long as the window is open
-	while (window.isOpen())
+	while (window.isOpen() && !exitStatus)
 	{
+		window.setTitle("Genetic TSP GUI - Current pointcount: " + std::to_string(dotcount));
+
+		float presentDistance = currentTour.dist;
+		popsize = tours.size();
+
+		sortTours();
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -373,23 +463,44 @@ int main()
 
 
 
-					if (buttonPressed(runbutton,event))
+
+				if (buttonPressed(printBestRoutesButton, event))
+				{
+					printBestRoutesButton.setFillColor(sf::Color::Green);
+					printBestRoutes();
+					
+					}
+
+				if (buttonPressed(cycleButton, event))
+				{
+					cycleButton.setFillColor(sf::Color::Green);
+					currentTour = tours[cycleCounter];
+					cycleCounter += 1;
+
+				}
+
+
+
+					if (buttonPressed(generateButton,event))
 					{
 
-
-						runbutton.setFillColor(sf::Color::Green);
-						routes.clear();
-
-						for (int i = 0; i < dotcount - 1; i++)
-						{
-							popsize = 0;
-							dotsX[i] = randomCoordinates('X');
-							dotsY[i] = randomCoordinates('Y');
-							bestdist = 100000;
-						}
-						routes.push_back(std::make_tuple(dotsX, dotsY));
+						generateButton.setFillColor(sf::Color::Green);
+						tours.clear();
+						randomizeDots();
+						cycleCounter = 1;
+						tours.push_back(cities);
+						currentTour = Tour(cities);
+						presentDistance = 100;
+					}
 
 
+
+
+					if (buttonPressed(exitButton,event))
+					{
+						return 0;
+						window.close();
+						
 					}
 
 
@@ -409,49 +520,36 @@ int main()
 
 					if (buttonPressed(randomizeOnceButton,event))
 					{
-
-
 						randomizeOnceButton.setFillColor(sf::Color::Green);
-						auto vectors = randomize(dotsX, dotsY);
-						dotsY = std::get<1>(vectors);
-						dotsX = std::get<0>(vectors);
+						currentTour = randomizeRoute(currentTour);
 
 					}
 
 
 					if (buttonPressed(showBestRouteButton,event))
 					{
-
-
 						showBestRouteButton.setFillColor(sf::Color::Green);
-						auto vectors = findBestRoute(routes);
-						dotsY = std::get<1>(vectors);
-						dotsX = std::get<0>(vectors);
-
+						currentTour = tours[0];
 					}
 
 					if (buttonPressed(changeDotcountButton,event))
 					{
 						std::cout << "Set amount of points" << std::endl;
 						std::cin >> dotcount;
-						dots.clear();
-						dotsX.clear();
-						dotsY.clear();
-						dots.reserve(dotcount);
-						dots.resize(dotcount);
-						dotsX.resize(dotcount);
-						dotsY.resize(dotcount);
-						routes.clear();
-						for (int i = 0; i < dotcount; i++)
-						{
-							popsize = 0;
-							dotsX[i] = randomCoordinates('X');
-							dotsY[i] = randomCoordinates('Y');
-							bestdist = 10000000;
-						}
-						routes.push_back(std::make_tuple(dotsX, dotsY));
+						tours.clear();
+						cities.clear();
+						randomizeDots();
+						tours.push_back(cities);
+						currentTour = Tour(cities);
 
+						std::cout << "alkapakka" << std::endl;
 
+					}
+
+					if (buttonPressed(changeRandomizerRateButton, event))
+					{
+						std::cout << "Set randomizer rate" << std::endl;
+						std::cin >> randomizeSleep;
 
 					}
 
@@ -469,9 +567,11 @@ int main()
 
 				if (event.type == sf::Event::MouseButtonReleased) {
 
-					runbutton.setFillColor(sf::Color::Red);
+					generateButton.setFillColor(sf::Color::Red);
 					randomizeOnceButton.setFillColor(sf::Color::Red);
 					showBestRouteButton.setFillColor(sf::Color::Red);
+					printBestRoutesButton.setFillColor(sf::Color::Red);
+					cycleButton.setFillColor(sf::Color::Red);
 
 				}
 
@@ -486,50 +586,48 @@ int main()
 
 
 
-			RouteDistances.resize(routes.size());
 			// clear the window with color
 			window.clear(windowColor);
 
 
 			// draw everything here...
 
-
+			//Draw dots here
 			for (int a = 0; a < dotcount; a++)
 			{
-
-				testicircle.setPosition(dotsX[a], dotsY[a]);
+				testicircle.setPosition(currentTour.cintour[a].x,currentTour.cintour[a].y);
 				window.draw(testicircle);
-
 
 			}
 
-
+			//Draw lines here
 			for (int a = 0; a < dotcount - 1; a++)
 			{
 
-				window.draw(sfLine(sf::Vector2f(dotsX[a] + 4, dotsY[a] + 4), sf::Vector2f(dotsX[a + 1] + 4, dotsY[a + 1] + 4)));
+				window.draw(sfLine(sf::Vector2f(currentTour.cintour[a].x + 4, currentTour.cintour[a].y + 4), sf::Vector2f(currentTour.cintour[a + 1].x + 4, currentTour.cintour[a + 1].y + 4)));
 
 
 			}
-			window.draw(sfLine(sf::Vector2f(dotsX[dotcount - 1] + 4, dotsY[dotcount - 1] + 4), sf::Vector2f(dotsX[0] + 4, dotsY[0] + 4)));
+			window.draw(sfLine(sf::Vector2f(currentTour.cintour[dotcount - 1].x + 4, currentTour.cintour[dotcount - 1].y + 4), sf::Vector2f(currentTour.cintour[0].x + 4, currentTour.cintour[0].y + 4)));
 
 
-
+			//Draw gridlines here
 			for (int a = 0; a < size(gridlinesVertical); a++)
 			{
 
-				window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical[a] + 50), sf::Vector2f(gridlinesHorizontal[1], gridlinesVertical[a] + 50)));
+				window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical[a] + 50), sf::Vector2f(gridlinesHorizontal[2], gridlinesVertical[a] + 50)));
 
 
 			};
 
-			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical[0] + 50), sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical.back() + 50)));
-			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[1], gridlinesVertical[0] + 50), sf::Vector2f(gridlinesHorizontal[1], gridlinesVertical.back() + 50)));
+			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical[0] + 50), sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical.back()-10  )));
+			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[1], gridlinesVertical[0] + 50), sf::Vector2f(gridlinesHorizontal[1], gridlinesVertical.back()-10  )));
+			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[2], gridlinesVertical[0] + 50), sf::Vector2f(gridlinesHorizontal[2], gridlinesVertical.back()-10  )));
 
 
-			/*getBestRoutes(routes);*/
+			if (popsize>8 && popsize % 70 ==1) {printBestRoutes();}
 
-			startcircle.setPosition(dotsX[0] - 4, dotsY[0] - 4);
+			startcircle.setPosition(cities[0].x - 4, cities[0].y - 4);
 			window.draw(startcircle);
 
 			window.draw(reunat);
@@ -537,21 +635,45 @@ int main()
 			window.draw(NameYearText);
 			window.draw(SchoolNameText);
 
-			window.draw(runbutton);
+			window.draw(generateButton);
 			window.draw(randomizebutton);
 			window.draw(randomizeOnceButton);
 			window.draw(RunSimulationButtonText);
 			window.draw(RandomizeRoutesText);
 			window.draw(randomizeRoutesOnceText);
+			window.draw(printBestRoutesButton);
 			window.draw(randomizerRateText);
 			randomizerSpeedNumberText.setString(std::to_string(randomizeSleep));
 			window.draw(randomizerSpeedNumberText);
+
+
+			window.draw(changeRandomizerRateButton);
+			window.draw(changeRandomizerRateButtonText);
 
 			window.draw(exitButton);
 			window.draw(exitButtonText);
 
 
 			window.draw(CurrentBestSolutionsText);
+			window.draw(printBestRoutesButtonText);
+
+			//CycleCounterText.setString(std::to_string(cycleCounter));
+			CycleCounterText.setString("Cycles:"+std::to_string(cycleCounter)+"/"+std::to_string(popsize));
+			window.draw(CycleCounterText);
+
+
+			window.draw(cycleButton);
+			window.draw(cycleButtonText);
+
+
+			window.draw(bestRoutes1);
+			window.draw(bestRoutes2);
+			window.draw(bestRoutes3);
+			window.draw(bestRoutes4);
+			window.draw(bestRoutes5);
+			window.draw(bestRoutes6);
+			window.draw(bestRoutes7);
+			window.draw(bestRoutes8);
 
 
 
@@ -561,12 +683,29 @@ int main()
 
 			window.draw(showBestRouteButton);
 			window.draw(showBestRouteText);
-			currentDist = tourDistance(dotsX, dotsY);
-			CurrentDistanceText.setString(std::to_string(currentDist));
+			currentDist = currentTour.dist;
+			CurrentDistanceText.setString(std::to_string(presentDistance));
 			window.draw(CurrentDistanceText);
 
 
-			;
+			window.draw(AdjacencyRepresentationText);
+			AdjacencyRepresentation.setString("1231243");
+			window.draw(AdjacencyRepresentation);
+
+
+
+			std::string citys = "";
+			for (int r = 0; r <= dotcount - 1; r++)
+			{
+				citys += std::to_string(currentTour.cintour[r].id);
+				citys += "-";
+			}
+			citys += "0";
+
+
+			window.draw(CityListText);
+			CityList.setString(citys);
+			window.draw(CityList);
 
 
 			if (currentDist < bestdist) bestdist = currentDist;
@@ -584,10 +723,9 @@ int main()
 
 			if (RandomizeStatus) {
 				Sleep(randomizeSleep);
-				auto vectors = randomize(dotsX, dotsY);
-				dotsY = std::get<1>(vectors);
-				dotsX = std::get<0>(vectors);
+				currentTour = randomizeRoute(currentTour);
 			}
+
 
 			/*
 			if (RouteDistances.size() > 0) {

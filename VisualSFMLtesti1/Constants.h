@@ -1,22 +1,27 @@
-float width = 1500;
-float height = 850;
+float width = 1320;
+float height = 650;
 float outlinet = 6;
 float leftEdge = 500;
 float circlesize = 4;
 float buttonwidth = 120;
 float buttonheight = 40;
 float startcirclesize = 8;
-int dotcount = 300;
+int dotcount = 16;
 float currentDist = 0;
-float bestdist = 10000000;
+float bestdist = INT_MAX;
 int randomizeSleep = 10;
 int popsize = 0;
 bool Finished = true;
 bool RandomizeStatus = false;
+bool exitStatus = false;
+bool drawState = false;
+int cycleCounter = 1;
 
 
 int VerticalOffset = -5;
 int HorizontalOffset = 0;
+
+
 
 
 const int buttonGridVertical1 = 90;
