@@ -1,3 +1,6 @@
+
+#ifndef OBJECTS_H
+#define OBJECTS_H
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <iostream>
@@ -9,63 +12,83 @@
 #include <queue>
 #include <tuple>
 #include <math.h>
+#include "Constants.h"
+#include "AuxilaryClasses.h"
+
+
+
+extern std::vector<Tour> tours;
+extern std::vector<City> cities;
+extern std::vector<Tour> auxtours;
+extern std::vector<Tour> newgen;
+
+
+/*Uuden napin lis‰‰minen:
+1) Lis‰‰ Objects.h Button Texts-kohtaan tekstiolio: MyFunctionButtonText
+2) Lis‰‰ Objects.h Button shapes- kohtaan rectangle nimell‰ MyFunctionButton
+3) Lis‰‰ mainiin InitializeButtonTexts-funktioon kohta, jossa teksti ja sijainti
+4) InitializeShapesiin Button positions-kohtaan suorakulmion sijainti
+5) Mainiin event listeneriin referenssi uuteen nappiin
+6) Mainiin window.draw()-komento MyFunctionButton ja MyFunctionButtonText
+*/
 
 //Used fonts
-sf::Font font;
+extern sf::Font font;
 
 
 //Used color definitions
-sf::Color windowColor(200, 200, 200);
+extern sf::Color windowColor;
 
 //Title texts
-sf::Text TSPText;
-sf::Text NameYearText;
-sf::Text SchoolNameText;
+extern sf::Text TSPText;
+extern sf::Text NameYearText;
+extern sf::Text SchoolNameText;
 
 
 //Button texts
-sf::Text RunSimulationButtonText;
-sf::Text showBestRouteText;
-sf::Text RandomizeRoutesText;
-sf::Text randomizeRoutesOnceText;
-sf::Text changeDotcountText;
-sf::Text exitButtonText;
-sf::Text printBestRoutesButtonText;
-sf::Text changeRandomizerRateButtonText;
-sf::Text cycleButtonText;
+extern sf::Text SubtourOptButtonText;
+extern sf::Text RunSimulationButtonText;
+extern sf::Text showBestRouteText;
+extern sf::Text RandomizeRoutesText;
+extern sf::Text randomizeRoutesOnceText;
+extern sf::Text changeDotcountText;
+extern sf::Text exitButtonText;
+extern sf::Text printBestRoutesButtonText;
+extern sf::Text changeRandomizerRateButtonText;
+extern sf::Text cycleButtonText;
 
 
 //Titles for different values
-sf::Text CurrentDistanceText;
-sf::Text AdjacencyRepresentationText;
-sf::Text CityListText;
-sf::Text CurrentBestText;
-sf::Text randomizerRateText;
-sf::Text CurrentPopulationText;
-sf::Text CycleCounterText;
+extern sf::Text CurrentDistanceText;
+extern sf::Text AdjacencyRepresentationText;
+extern sf::Text CityListText;
+extern sf::Text CurrentBestText;
+extern sf::Text randomizerRateText;
+extern sf::Text CurrentPopulationText;
+extern sf::Text CycleCounterText;
 
 //Value texts
 
-sf::Text currentDistance;
-sf::Text AdjacencyRepresentation;
-sf::Text CityList;
-sf::Text CurrentBestNumberText;
-sf::Text randomizerSpeedNumberText;
-sf::Text CurrentPopulationNumberText;
+extern sf::Text currentDistance;
+extern sf::Text AdjacencyRepresentation;
+extern sf::Text CityList;
+extern sf::Text CurrentBestNumberText;
+extern sf::Text randomizerSpeedNumberText;
+extern sf::Text CurrentPopulationNumberText;
 
 
 //More value texts: best 4 routes
-sf::Text bestRoutes1;
-sf::Text bestRoutes2;
-sf::Text bestRoutes3;
-sf::Text bestRoutes4;
-sf::Text bestRoutes5;
-sf::Text bestRoutes6;
-sf::Text bestRoutes7;
-sf::Text bestRoutes8;
+extern sf::Text bestRoutes1;
+extern sf::Text bestRoutes2;
+extern sf::Text bestRoutes3;
+extern sf::Text bestRoutes4;
+extern sf::Text bestRoutes5;
+extern sf::Text bestRoutes6;
+extern sf::Text bestRoutes7;
+extern sf::Text bestRoutes8;
 
 //Other or testing
-sf::Text CurrentBestSolutionsText;
+extern sf::Text CurrentBestSolutionsText;
 
 
 
@@ -73,7 +96,7 @@ sf::Text CurrentBestSolutionsText;
 
 
 
-sf::Text bestRoutesNumber;
+extern sf::Text bestRoutesNumber;
 
 
 //std::vector <std::tuple<std::vector <float>, std::vector <float>>> routes(0);
@@ -88,17 +111,25 @@ sf::Text bestRoutesNumber;
 
 
 
-std::vector <int> gridlinesHorizontal{ 20,200,380 };
-std::vector <int> gridlinesVertical{ 470,500,530,560,590,620,650 };
-sf::CircleShape testicircle(circlesize);
-sf::CircleShape startcircle(startcirclesize);
-sf::RectangleShape reunat(sf::Vector2f(width - leftEdge - outlinet, height - outlinet * 2));
-sf::RectangleShape generateButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape randomizebutton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape randomizeOnceButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape showBestRouteButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape printBestRoutesButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape changeDotcountButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape changeRandomizerRateButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape exitButton(sf::Vector2f(buttonwidth, buttonheight));
-sf::RectangleShape cycleButton(sf::Vector2f(buttonwidth, buttonheight));
+extern std::vector <int> gridlinesHorizontal;
+extern std::vector <int> gridlinesVertical;
+extern sf::CircleShape testicircle;
+extern sf::CircleShape startcircle;
+extern sf::RectangleShape reunat;
+extern std::pair<int, int> crossoverIndices;
+
+
+
+//Button shapes here
+extern sf::RectangleShape generateButton;
+extern sf::RectangleShape randomizebutton;
+extern sf::RectangleShape randomizeOnceButton;
+extern sf::RectangleShape showBestRouteButton;
+extern sf::RectangleShape printBestRoutesButton;
+extern sf::RectangleShape changeDotcountButton;
+extern sf::RectangleShape changeRandomizerRateButton;
+extern sf::RectangleShape exitButton;
+extern sf::RectangleShape cycleButton;
+extern sf::RectangleShape SubtourOptButton;
+
+#endif

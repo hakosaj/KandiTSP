@@ -1,36 +1,45 @@
-float width = 1320;
-float height = 650;
-float outlinet = 6;
-float leftEdge = 500;
-float circlesize = 4;
-float buttonwidth = 120;
-float buttonheight = 40;
-float startcirclesize = 8;
-int dotcount = 16;
-float currentDist = 0;
-float bestdist = INT_MAX;
-int randomizeSleep = 10;
-int popsize = 0;
-bool Finished = true;
-bool RandomizeStatus = false;
-bool exitStatus = false;
-bool drawState = false;
-int cycleCounter = 1;
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#include <limits.h>
+
+extern float width;
+extern float height;
+extern float outlinet;
+extern float leftEdge;
+extern float circlesize;
+extern float buttonwidth;
+ extern float buttonheight;
+extern float startcirclesize;
+ extern int generationSize;
+
+ extern double mutationRate;
+ extern int dotcount;
+ extern float currentDist;
+ extern float bestdist;
+ extern int randomizeSleep;
+ extern int popsize;
+ extern bool Finished;
+ extern bool RandomizeStatus;
+ extern bool exitStatus;
+ extern bool drawState;
+ extern int cycleCounter;
 
 
-int VerticalOffset = -5;
-int HorizontalOffset = 0;
-
-
-
-
-const int buttonGridVertical1 = 90;
-const int buttonGridVertical2 = 150;
-const int buttonGridVertical3 = 210;
-const int buttonGridHorizontal1 = 20;
-const int buttonGridHorizontal2 = 160;
-const int buttonGridHorizontal3 = 300;
-const int textButtonOffset = 11;
+ extern int VerticalOffset;
+ extern int HorizontalOffset;
 
 
 
+
+extern int buttonGridVertical1;
+extern int buttonGridVertical2;
+extern int buttonGridVertical3;
+extern int buttonGridVertical4;
+extern int buttonGridHorizontal1;
+extern int buttonGridHorizontal2;
+extern int buttonGridHorizontal3;
+extern int textButtonOffset;
+
+
+#endif
