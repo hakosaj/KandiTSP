@@ -23,16 +23,30 @@ int main()
 {
 
 	srand(time(NULL));
+	std::cout << "Welcome to JH TSP simulation. Would you like to read a csv-file? (y/n)" << std::endl;
+
+	std::string filePrompt;
+	std::cin >> filePrompt;
 
 
 
-	/*
-	std::cout << "Welcome to JH TSP simulation. Randomized(r), convex(c) or nonconvex(n) vertex set?" << std::endl;
-	std::string vertexSetType;
-	std::cin >> vertexSetType;
-	std::cout << "How many dots" << std::endl;
-	std::cin >> dotcount;
-	*/
+	if (filePrompt != "y") {
+		std::cout << " Randomized(r), convex(c) or nonconvex(n) vertex set? " << std::endl;
+		std::string vertexSetType;
+		std::cin >> vertexSetType;
+		std::cout << "How many dots" << std::endl;
+		std::cin >> dotcount;
+
+		if (vertexSetType == "r") { initializeDots(); }
+		if (vertexSetType == "c") { initializeDotsCircle(); }
+		if (vertexSetType == "n") { initializeDotsStar(); }
+	}
+	
+	if (filePrompt == "y") {
+		auto fields = readCsv();
+		dotcount = fields.size();
+	}
+
 	// create the window
 	sf::RenderWindow window(sf::VideoMode(width, height), "Genetic TSP GUI - Current pointcount: " + std::to_string(dotcount));
 
@@ -41,15 +55,6 @@ int main()
 
 	initializeTexts();
 	initializeShapes();
-	/*
-	if (vertexSetType == "r") { initializeDots(); }
-	if (vertexSetType == "c") { initializeDotsCircle(); }
-	if (vertexSetType == "n") { initializeDotsStar(); }
-	*/
-	dotcount = 20;
-	initializeDots();
-
-
 	initializeButtonTexts();
 
 
@@ -63,7 +68,7 @@ int main()
 		float presentDistance = currentTour.dist;
 		popsize = tours.size();
 
-		sortTours();
+		//sortTours(tours);
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -80,6 +85,9 @@ int main()
 				{
 					runAlgorithm(currentTour);
 					currentTour = tours[0];
+					std::cout << "This dist:" << distance(tours[0].cintour) << std::endl;
+					printVector(tours[0].cintour);
+					currentDist = currentTour.dist;
 					
 					
 
@@ -221,7 +229,8 @@ int main()
 		window.clear(windowColor);
 
 		if (currentDist < bestdist) bestdist = currentDist;
-		currentDist = currentTour.dist;
+		currentDist = distance(currentTour.cintour);
+		sortTours(tours);
 
 
 
@@ -233,7 +242,7 @@ int main()
 			testicircle.setPosition(currentTour.cintour[a].x, currentTour.cintour[a].y);
 			window.draw(testicircle);
 		}
-		startcircle.setPosition(cities[0].x - 4, cities[0].y - 4);
+		startcircle.setPosition(currentTour.cintour[0].x - 4, currentTour.cintour[0].y - 4);
 		window.draw(startcircle);
 
 		//Draw lines here
@@ -295,8 +304,7 @@ int main()
 		window.draw(showBestRouteText);
 		window.draw(twoOptButtonText);
 
-		//Draw texts for various value labels
-		currentDist = currentTour.dist;
+		//Draw texts for various value labels;
 		CurrentDistanceText.setString(std::to_string(currentDist));
 		window.draw(CurrentDistanceText);
 		randomizerSpeedNumberText.setString(std::to_string(randomizeSleep));
@@ -324,12 +332,13 @@ int main()
 
 		//Draw the city list
 		std::string citys = "";
-		for (int r = 0; r <= currentTour.size() - 1; r++)
+		citys += std::to_string(currentTour.cintour[0].id);
+		for (int r = 1; r <= currentTour.size() - 1; r++)
 		{
-			citys += std::to_string(currentTour.cintour[r].id);
 			citys += "-";
+			citys += std::to_string(currentTour.cintour[r].id);
+
 		}
-		//citys += "0";
 		window.draw(CityListText);
 		CityList.setString(citys);
 		window.draw(CityList);
