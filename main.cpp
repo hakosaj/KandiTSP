@@ -15,6 +15,8 @@
 #include <queue>
 #include "AuxilaryClasses.h"
 #include "Functions.h"
+#include "AlgFunctions.h"
+#include "InitializeFunctions.h"
 #include "Objects.h"
 #include "Constants.h"
 
@@ -23,19 +25,27 @@ int main()
 {
 
 	srand(time(NULL));
+	std::string filePrompt = "y";
+	/*
 	std::cout << "Welcome to JH TSP simulation. Would you like to read a csv-file? (y/n)" << std::endl;
 
-	std::string filePrompt;
+	
 	std::cin >> filePrompt;
+	*/
+
+
 
 
 
 	if (filePrompt != "y") {
-		std::cout << " Randomized(r), convex(c) or nonconvex(n) vertex set? " << std::endl;
+
+		//std::cout << " Randomized(r), convex(c) or nonconvex(n) vertex set? " << std::endl;
 		std::string vertexSetType;
-		std::cin >> vertexSetType;
-		std::cout << "How many dots" << std::endl;
-		std::cin >> dotcount;
+		//std::cin >> vertexSetType;
+		//std::cout << "How many dots" << std::endl;
+		//std::cin >> dotcount;
+		vertexSetType = "r";
+		dotcount = 30;
 
 		if (vertexSetType == "r") { initializeDots(); }
 		if (vertexSetType == "c") { initializeDotsCircle(); }
@@ -46,6 +56,8 @@ int main()
 		auto fields = readCsv();
 		dotcount = fields.size();
 	}
+
+
 
 	// create the window
 	sf::RenderWindow window(sf::VideoMode(width, height), "Genetic TSP GUI - Current pointcount: " + std::to_string(dotcount));
@@ -81,24 +93,37 @@ int main()
 			if (event.type == sf::Event::MouseButtonPressed) {
 
 
-				if (buttonPressed(twoOptButton, event))
+				if (buttonPressed(runAlgorithmButton, event))
 				{
-					runAlgorithm(currentTour);
+
+					std::string sel = "roulette";
+					std::string cross = "OX";
+					std::string mutate = "3opt";
+					int gens = 10;
+					/*
+					std::cout << "Choose selection method: roulette, linear. Current: "+ sel << std::endl;
+					std::cin >> sel;
+					std::cout << "Choose crossover method: OX, EX. Current: " + cross << std::endl;
+					std::cin >> cross;
+					std::cout << "Choose mutation method: swap, scramble, 2opt, 3opt. Current: "+mutate << std::endl;
+					std::cin >> mutate;
+					std::cout << "For how many generations? Current: " << gens << std::endl;
+					std::cin >> gens;
+					*/
+
+					std::string titlestring  = ("Running TSP: Dotcount = "+ std::to_string(dotcount)+std::string(" , Selection: ") +sel+std::string(" , Crossover: ")
+						+ cross + std::string(", Mutation: ")+  mutate );
+					window.setTitle(titlestring);
+					runAlgorithm(currentTour, gens,sel,cross,mutate);
 					currentTour = tours[0];
-					std::cout << "This dist:" << distance(tours[0].cintour) << std::endl;
-					printVector(tours[0].cintour);
 					currentDist = currentTour.dist;
+
 					
 					
 
 				}
 
 
-				if (buttonPressed(SubtourOptButton, event))
-				{
-					nextGeneration(generationSize, mutationRate);
-
-				}
 
 				if (buttonPressed(printBestRoutesButton, event))
 				{
@@ -173,7 +198,7 @@ int main()
 				{
 					std::cout << "Set amount of points" << std::endl;
 					std::cin >> dotcount;
-					tours.clear();
+					tours.clear(); 
 					cities.clear();
 					randomizeDots();
 					tours.push_back(cities);
@@ -209,8 +234,7 @@ int main()
 				showBestRouteButton.setFillColor(sf::Color::Red);
 				printBestRoutesButton.setFillColor(sf::Color::Red);
 				cycleButton.setFillColor(sf::Color::Red);
-				SubtourOptButton.setFillColor(sf::Color::Red);
-				twoOptButton.setFillColor(sf::Color::Red);
+				runAlgorithmButton.setFillColor(sf::Color::Red);
 
 			}
 
@@ -228,9 +252,12 @@ int main()
 		// clear the window with color
 		window.clear(windowColor);
 
+		//Do stuff between refreshes here!
 		if (currentDist < bestdist) bestdist = currentDist;
 		currentDist = distance(currentTour.cintour);
-		sortTours(tours);
+
+
+		
 
 
 
@@ -284,10 +311,9 @@ int main()
 		window.draw(changeRandomizerRateButton);
 		window.draw(exitButton);
 		window.draw(cycleButton);
-		window.draw(SubtourOptButton);
 		window.draw(changeDotcountButton);
 		window.draw(showBestRouteButton);
-		window.draw(twoOptButton);
+		window.draw(runAlgorithmButton);
 
 
 		//Draw button texts
@@ -295,14 +321,13 @@ int main()
 		window.draw(RandomizeRoutesText);
 		window.draw(randomizeRoutesOnceText);
 		window.draw(changeRandomizerRateButtonText);
-		window.draw(SubtourOptButtonText);
 		window.draw(changeDotcountText);
 		window.draw(exitButtonText);
 		window.draw(CurrentBestSolutionsText);
 		window.draw(printBestRoutesButtonText);
 		window.draw(cycleButtonText);
 		window.draw(showBestRouteText);
-		window.draw(twoOptButtonText);
+		window.draw(runAlgorithmButtonText);
 
 		//Draw texts for various value labels;
 		CurrentDistanceText.setString(std::to_string(currentDist));

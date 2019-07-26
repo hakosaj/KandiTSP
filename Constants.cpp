@@ -4,6 +4,9 @@
 #include <limits.h>
 #include "Constants.h"
 
+
+double scalefactor = 0.3;
+
 float width = 1200;
 float height = 700;
 float outlinet = 6;

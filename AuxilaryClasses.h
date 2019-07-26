@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Constants.h"
 
 //Class for drawing sf lines
 class sfLine : public sf::Drawable
@@ -86,7 +87,7 @@ public:	float dist;
 		float euclideanDistance(float x1, float x2, float y1, float y2)
 		{
 			float dist = std::sqrt(std::pow(x1 - x2, 2) + std::pow(y1 - y2, 2));
-			return dist;
+			return dist/scalefactor;
 		}
 
 		float distance(std::vector<City> cits)
@@ -99,7 +100,7 @@ public:	float dist;
 			}
 			currentDist += euclideanDistance(cits[0].x, cits[cintour.size() - 1].x, cits[0].y, cits[cintour.size() - 1].y);
 
-			return currentDist;
+			return   currentDist;
 		}
 
 		std::vector<int> ids()

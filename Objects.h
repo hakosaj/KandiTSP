@@ -47,7 +47,6 @@ extern sf::Text SchoolNameText;
 
 
 //Button texts
-extern sf::Text SubtourOptButtonText;
 extern sf::Text RunSimulationButtonText;
 extern sf::Text showBestRouteText;
 extern sf::Text RandomizeRoutesText;
@@ -57,7 +56,7 @@ extern sf::Text exitButtonText;
 extern sf::Text printBestRoutesButtonText;
 extern sf::Text changeRandomizerRateButtonText;
 extern sf::Text cycleButtonText;
-extern sf::Text twoOptButtonText;
+extern sf::Text runAlgorithmButtonText;
 
 
 //Titles for different values
@@ -134,7 +133,6 @@ extern sf::RectangleShape changeDotcountButton;
 extern sf::RectangleShape changeRandomizerRateButton;
 extern sf::RectangleShape exitButton;
 extern sf::RectangleShape cycleButton;
-extern sf::RectangleShape SubtourOptButton;
-extern sf::RectangleShape twoOptButton;
+extern sf::RectangleShape runAlgorithmButton;
 
 #endif

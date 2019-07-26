@@ -3,6 +3,8 @@
 
 #include <limits.h>
 
+
+extern double scalefactor;
 extern float width;
 extern float height;
 extern float outlinet;

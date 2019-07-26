@@ -35,7 +35,6 @@ std::vector<Tour> newgen;
 
 
 //Button texts
- sf::Text SubtourOptButtonText;
  sf::Text RunSimulationButtonText;
  sf::Text showBestRouteText;
  sf::Text RandomizeRoutesText;
@@ -45,7 +44,7 @@ std::vector<Tour> newgen;
  sf::Text printBestRoutesButtonText;
  sf::Text changeRandomizerRateButtonText;
  sf::Text cycleButtonText;
- sf::Text twoOptButtonText;
+ sf::Text runAlgorithmButtonText;
 
 
 //Titles for different values
@@ -109,7 +108,6 @@ std::vector<Tour> newgen;
  sf::RectangleShape changeRandomizerRateButton(sf::Vector2f(buttonwidth, buttonheight));
  sf::RectangleShape exitButton(sf::Vector2f(buttonwidth, buttonheight));
  sf::RectangleShape cycleButton(sf::Vector2f(buttonwidth, buttonheight));
- sf::RectangleShape SubtourOptButton(sf::Vector2f(buttonwidth, buttonheight));
- sf::RectangleShape twoOptButton(sf::Vector2f(buttonwidth, buttonheight));
+ sf::RectangleShape runAlgorithmButton(sf::Vector2f(buttonwidth, buttonheight));
 
 #endif
