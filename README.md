@@ -40,5 +40,5 @@ This project is licensed under the MIT License
 
 ## Acknowledgments
 
-* Juho Andelmin (my dear supervisor)
-* Perttu Yli-opas and Pietari Kaskela for pushing me here
+* Juho Andelmin (my dear supervisor).
+* Perttu Yli-Opas, Juuso Kylmäoja Pietari Kaskela for pushing me onwards.
