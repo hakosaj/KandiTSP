@@ -8,9 +8,9 @@ Simply clone the repository to a directory, compile and we are good to go! Makef
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
 
 -Windows 10! (Sorry, the current version is built around Windows libraries)
+
 -SFML, at least version 2.5.1.
 
 
