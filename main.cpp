@@ -19,12 +19,30 @@
 #include "InitializeFunctions.h"
 #include "Objects.h"
 #include "Constants.h"
+#include <random>
+#include <omp.h>
 
 
 int main()
 {
+	//Roulette, ranked
+	std::string sel = "roulette"; 
+	//EX-crossover, OX-crossover
+	std::string cross = "EX";
+    //Swap, Scramble, 2opt, 3opt
+	std::string mutate = "3opt";
 
-	srand(time(NULL));
+	//Stopping criteria:average cjange
+
+
+	std::string vertexSetType = "c";
+
+
+
+
+	std::srand(std::time(nullptr));
+	std::random_device rd;
+
 	std::string filePrompt = "y";
 	/*
 	std::cout << "Welcome to JH TSP simulation. Would you like to read a csv-file? (y/n)" << std::endl;
@@ -45,7 +63,6 @@ int main()
 		//std::cout << "How many dots" << std::endl;
 		//std::cin >> dotcount;
 		vertexSetType = "r";
-		dotcount = 30;
 
 		if (vertexSetType == "r") { initializeDots(); }
 		if (vertexSetType == "c") { initializeDotsCircle(); }
@@ -77,7 +94,7 @@ int main()
 	{
 		window.setTitle("Genetic TSP GUI - Current pointcount: " + std::to_string(dotcount));
 
-		float presentDistance = currentTour.dist;
+		float presentDistance = currentTour.distance();
 		popsize = tours.size();
 
 		//sortTours(tours);
@@ -96,11 +113,9 @@ int main()
 				if (buttonPressed(runAlgorithmButton, event))
 				{
 
-					std::string sel = "roulette";
-					std::string cross = "OX";
-					std::string mutate = "3opt";
+
 					int gens = 10;
-					/*
+					
 					std::cout << "Choose selection method: roulette, linear. Current: "+ sel << std::endl;
 					std::cin >> sel;
 					std::cout << "Choose crossover method: OX, EX. Current: " + cross << std::endl;
@@ -109,14 +124,15 @@ int main()
 					std::cin >> mutate;
 					std::cout << "For how many generations? Current: " << gens << std::endl;
 					std::cin >> gens;
-					*/
+					
 
 					std::string titlestring  = ("Running TSP: Dotcount = "+ std::to_string(dotcount)+std::string(" , Selection: ") +sel+std::string(" , Crossover: ")
 						+ cross + std::string(", Mutation: ")+  mutate );
 					window.setTitle(titlestring);
 					runAlgorithm(currentTour, gens,sel,cross,mutate);
-					currentTour = tours[0];
-					currentDist = currentTour.dist;
+
+					//currentTour = tours[0];
+					//currentDist = currentTour.distance();
 
 					
 					
@@ -128,7 +144,7 @@ int main()
 				if (buttonPressed(printBestRoutesButton, event))
 				{
 					printBestRoutesButton.setFillColor(sf::Color::Green);
-					printBestRoutes();
+					printBestRoutes(tours);
 
 				}
 
@@ -153,7 +169,7 @@ int main()
 					tours.push_back(cities);
 					currentTour = Tour(cities);
 					presentDistance = 100;
-					currentDist = currentTour.dist;
+					currentDist = currentTour.distance();
 				}
 
 
@@ -253,8 +269,8 @@ int main()
 		window.clear(windowColor);
 
 		//Do stuff between refreshes here!
+		currentDist = currentTour.distance();
 		if (currentDist < bestdist) bestdist = currentDist;
-		currentDist = distance(currentTour.cintour);
 
 
 		
@@ -343,6 +359,9 @@ int main()
 		window.draw(CurrentBestText);
 		window.draw(CurrentPopulationText);
 
+
+
+		//if (popsize>8 && popsize % 70 == 1) { printBestRoutes(tours); }
 		//Draw best courses
 		window.draw(bestRoutes1);
 		window.draw(bestRoutes2);
@@ -354,7 +373,7 @@ int main()
 		window.draw(bestRoutes8);
 
 
-
+		/*
 		//Draw the city list
 		std::string citys = "";
 		citys += std::to_string(currentTour.cintour[0].id);
@@ -367,6 +386,7 @@ int main()
 		window.draw(CityListText);
 		CityList.setString(citys);
 		window.draw(CityList);
+		*/
 
 
 
@@ -377,7 +397,7 @@ int main()
 			currentTour = randomizeRoute(currentTour);
 		}
 
-		if (popsize>8 && popsize % 70 == 1) { printBestRoutes(); }
+
 		window.display();
 	}
 

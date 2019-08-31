@@ -1,7 +1,13 @@
 #ifndef AFUNCTIONS_H
 #define AFUNCTIONS_H
 
+
+
 #include "AuxilaryClasses.h"
+
+using  std::cout;
+using  std::vector;
+using  std::endl;
 
 //Functions for selection methods 
 void rankedSelection(int gensize);
@@ -26,4 +32,7 @@ void swapMutate(float mutationrate);
 void mutate(std::string identifier, float mutationrate);
 
 
+
+
+bool averageChangeStopper(std::vector<Tour> oldgen, std::vector<Tour> newgen);
 #endif 

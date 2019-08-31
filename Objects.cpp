@@ -16,6 +16,15 @@
 #include "Objects.h"
 #include "AuxilaryClasses.h"
 
+
+#pragma warning(disable: 4996)
+
+using  std::cout;
+using  std::vector;
+using  std::endl;
+
+
+
 std::vector<Tour> tours;
 std::vector<City> cities;
 std::vector<Tour> auxtours;

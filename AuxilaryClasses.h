@@ -69,7 +69,7 @@ public:	float dist;
 
 		Tour(std::vector<City> cts) {
 			cintour = cts;
-			dist = distance(cintour);
+			dist = this->distance();
 		}
 
 		bool operator < (const Tour& tour2) const
@@ -90,11 +90,24 @@ public:	float dist;
 			return dist/scalefactor;
 		}
 
+		float distance()
+		{
+			float currentDist = 0;
+
+			for (int i = 0; i < this->cintour.size()-1 ; i++)
+			{
+				currentDist += euclideanDistance(this->cintour[i].x, this->cintour[i + 1].x, this->cintour[i].y, this->cintour[i + 1].y);
+			}
+			currentDist += euclideanDistance(this->cintour[0].x, this->cintour[cintour.size() - 1].x, this->cintour[0].y, this->cintour[cintour.size() - 1].y);
+
+			return   currentDist;
+		}
+		/*
 		float distance(std::vector<City> cits)
 		{
 			float currentDist = 0;
 
-			for (int i = 0; i < cintour.size()-1 ; i++)
+			for (int i = 0; i < cintour.size() - 1; i++)
 			{
 				currentDist += euclideanDistance(cits[i].x, cits[i + 1].x, cits[i].y, cits[i + 1].y);
 			}
@@ -102,6 +115,7 @@ public:	float dist;
 
 			return   currentDist;
 		}
+		*/
 
 		std::vector<int> ids()
 		{

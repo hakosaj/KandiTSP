@@ -14,8 +14,8 @@ float euclideanDistance(float x1, float x2, float y1, float y2);
 int randomCoordinates(char identifier);
 void randomizeDots();
 bool buttonPressed(sf::RectangleShape rect, sf::Event event);
-void printBestRoutes();
-void nextGeneration(int gensize, float mutationrate, std::string selecting, std::string crossovering, std::string mutating);
+void printBestRoutes(std::vector<Tour> tours);
+void nextGeneration(int gensize, float mutationrate, std::string selecting, std::string crossovering, std::string mutating, int currentgen);
 
 //Tour-specific functions
 bool comp(Tour a, Tour b);

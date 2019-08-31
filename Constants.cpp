@@ -15,12 +15,12 @@ float circlesize = 4;
 float buttonwidth = 120;
 float buttonheight = 40;
 float startcirclesize = 8;
-int generationSize = 20;
-int initialPopulation = 50;
+int generationSize = 10;
+int initialPopulation = 60;
 int currentgen = 0;
 
-double mutationRate = 0.2;
-int dotcount = 16;
+double mutationRate = 0.3;
+int dotcount = 30;
 float currentDist = INT_MAX;
 float bestdist = INT_MAX;
 int randomizeSleep = 10;
@@ -35,7 +35,7 @@ int cycleCounter = 1;
 int VerticalOffset = -5;
 int HorizontalOffset = 0;
 
-
+bool stoppingCriteriaMet = false;
 
 
 int buttonGridVertical1 = 90;

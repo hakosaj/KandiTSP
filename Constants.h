@@ -33,7 +33,7 @@ extern int initialPopulation;
  extern int VerticalOffset;
  extern int HorizontalOffset;
 
-
+ extern bool stoppingCriteriaMet;
 
 
 extern int buttonGridVertical1;

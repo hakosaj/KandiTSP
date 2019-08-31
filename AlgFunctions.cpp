@@ -35,203 +35,281 @@ void rankedSelection(int gensize)
 {
 	std::cout << "Doing elitism selection" << std::endl;
 	auxtours.clear();
+	auxtours.push_back(tours[0]);
 	//std::cout << "debug 2. tours size: " << tours.size() << std::endl;
-	for (int i = 0; i < generationSize; i++)
-	{
-		auxtours.push_back(tours[i]);
-		//std::cout << tours[i].representation() << std::endl;
+
+
+	int ind = 1;
+	while (auxtours.size() < generationSize/2 +1) {
+		try {
+			auto candidate = tours[ind];
+			bool isLegitCandidate = true;
+			for (int a = 0; a < auxtours.size(); a++) {
+				if (candidate.cintour == auxtours[a].cintour) {
+					isLegitCandidate = false;
+				}
+
+			}
+			if (isLegitCandidate) {
+				auxtours.push_back(candidate);
+			}
+			ind++;
+		}
+		catch (const std::exception& e) {
+			cout << "Kaikki käyty läpi. Fuck." << endl;
+
+		}
+
+
+
 	}
+
+
+	assert(areLegitTours(auxtours));
 }
 
 
 //Functions for crossovers
 
-//Poista vierekkyysunioneista
-std::vector<std::pair<City, std::vector<City>>> removeFromAdjacencyUnions(City N, std::vector<std::pair<City, std::vector<City>>> adjacencyUnions)
-{
-	int r = adjacencyUnions.size();
-	for (int i = 0; i < r; i++)
-	{
-		adjacencyUnions[i].second.erase(std::remove(adjacencyUnions[i].second.begin(), adjacencyUnions[i].second.end(), N), adjacencyUnions[i].second.end());
-
-	}
-	return adjacencyUnions;
-
-}
 //EX-crossover
 void edgeRecombinationCrossover(std::vector<std::pair<int, int>> parentPairs)
 {
-	for (int g = 0; g < generationSize; g++)
-
+	while (newgen.size()<generationSize)
+		
+		
 	{
-		Tour parent1 = auxtours[std::get<0>(parentPairs[g])];
-		Tour parent2 = auxtours[std::get<1>(parentPairs[g])];
-		//Löydä se elementti, jossa adjacencyvektorin ekan id:t vastaa. yhdistä naapurit.
-		auto adjacency1 = generateAdjacencyMatrix(parent1);
-		auto adjacency2 = generateAdjacencyMatrix(parent2);
-		//generate adjacency union set
-		std::vector<std::pair<City, std::vector<City>>> adjacencyUnions;
 
-		//generate one adjacency union pair
-		for (int i = 0; i < parent1.cintour.size(); i++)
-		{
+		static constexpr double fraction{ 1.0 / (RAND_MAX + 1.0) };
+	
 
-			int idq = std::get<0>(adjacency1[i]).id;
+		int otherint = 0;
+		int thisint = 0;
+		while (otherint == thisint || thisint==generationSize || otherint==generationSize) {
+			otherint = static_cast<int>((generationSize) * (std::rand() * fraction));
 
-			auto position = std::find_if(adjacency2.begin(), adjacency2.end(),
-				[=](auto item)
-			{
-				std::cout << "Found!" << std::endl;
-				return std::get< 0 >(item).id == idq;
-			});
-
-			std::tuple<City, City, City> a1 = adjacency1[i];
-			std::tuple<City, City, City> a2 = *position;
-			//std::cout << "Adj 1: " << std::get<0>(a1).id << std::get<1>(a1).id<< std::get<2>(a1).id << std::endl;
-			//std::cout << "Adj 2: " << std::get<0>(a2).id << std::get<1>(a2).id << std::get<2>(a2).id << std::endl;
-
-			int rar;
-			std::cin >> rar;
-
-
-			//the city component of the pair:
-			City paircity = std::get<0>(a1);
-
-			// comparison element for the set
-			struct CustomCompare
-			{
-				bool operator()(const int& lhs, const int& rhs)
-				{
-					return lhs < rhs;
-				}
-
-				bool operator()(const City& lhs, const City& rhs)
-				{
-					return lhs.id < rhs.id;
-				}
-			};
-			//generate the city vector component of the pair
-			std::vector<City> adjacentCities;
-			std::set<City, CustomCompare> adjacentCitiesSet;
-			adjacentCitiesSet.insert(std::get<1>(a1));
-			adjacentCitiesSet.insert(std::get<2>(a1));
-			adjacentCitiesSet.insert(std::get<1>(a2));
-			std::copy(adjacentCitiesSet.begin(), adjacentCitiesSet.end(), std::back_inserter(adjacentCities));
-			adjacencyUnions.push_back(std::make_pair(paircity, adjacentCities));
+			thisint = static_cast<int>((generationSize + 1) * (std::rand() * fraction));
 		}
 
-		/*for (int r = 0; r < adjacencyUnions.size(); r++)
-		{
-		std::cout << "Union: " << adjacencyUnions[r].first.id << " : ";
-		printVector(adjacencyUnions[r].second);
-		}*/
+
+		Tour parent11 = auxtours[std::get<0>(parentPairs[thisint])];
+		Tour parent22 = auxtours[std::get<1>(parentPairs[otherint])];
+		assert(isLegitRoute(parent22));
+		assert(isLegitRoute(parent11));
 
 
-		//Do the actual crossover
-		std::vector<City> routePlaceholder;
+		std::vector<int> parent1 = parent11.ids();
+		std::vector<int> parent2 = parent22.ids();
 
-		int randomslot = std::rand() % parent2.cintour.size();
-		City N = adjacencyUnions[randomslot].first;
+		int amount = parent1.size();
 
+		std::map<int, std::set<int>> edgeMap1;
+		std::map<int, std::set<int>> edgeMap2;
+		std::map<int, std::set<int>> edgeMap;
+		//tämä;edellinen,seruaava
 
-		while (routePlaceholder.size() < parent1.cintour.size())
-		{
-			//std::cout << "Currentroute: ";
-			//printVector(routePlaceholder);
+		//Add parent1 first and last
+		edgeMap1.insert({ parent1[0],{parent1.back(),parent1[1]} });
+		edgeMap1.insert({ parent1.back(),{ parent1[amount-2],parent1[0] } });
 
-			//std::cout << "N = " << N.id << std::endl;
-			routePlaceholder.push_back(N);
-			adjacencyUnions = removeFromAdjacencyUnions(N, adjacencyUnions);
-			//get N's neighbor list
+		//Add parent1 rest
+		for (int i = 1; i < amount - 1; i++) {
+			edgeMap1.insert({ parent1[i],{parent1[i - 1],parent1[i + 1]} });
+		}
 
+		//Add parent2 first and last
+		edgeMap2.insert({ parent2[0],{ parent2.back(),parent2[1] } });
+		edgeMap2.insert({ parent2.back(),{ parent2.back() - 1,parent2[0] } });
 
-			auto neighborListIter = std::find_if(adjacencyUnions.begin(), adjacencyUnions.end(),
-				[=](auto item)
-			{
-				return item.first == N;
-			});
-			std::pair<City, std::vector<City>>neighborList = *neighborListIter;
-			//if N's neighbor list is not empty:
-			if (!neighborList.second.empty())
-			{
-				//find the neighbor with fewest neighbors in its neigbor list
-
-				int current = 0;
-
-				//iterate trough all neighbor lists of N's neighbors
-				std::vector<std::pair<City, std::vector<City>>> NNeighborLists;
-				for (int z = 0; z < neighborList.second.size(); z++)
-				{
-					auto NNeighbor = neighborList.second[z];
-					//get N's neighbor's neighbor list
-					auto NNeighborListIter = std::find_if(adjacencyUnions.begin(), adjacencyUnions.end(),
-						[=](auto item)
-					{
-						return item.first == NNeighbor;
-					});
-					std::pair<City, std::vector<City>>NNeighborList = *NNeighborListIter;
-					NNeighborLists.push_back(NNeighborList);
+		//Add parent2 rest
+		for (int i = 1; i < amount - 1; i++) {
+			edgeMap2.insert({ parent2[i],{ parent2[i - 1],parent2[i + 1] } });
+		}
 
 
+
+		//Get the keyset from edgemap
+		std::vector<int> edgeMapKeys;
+		for (auto const& element : edgeMap1) {
+			edgeMapKeys.push_back(element.first);
+		}
+
+
+		//combine two maps into one
+		for (int key : edgeMapKeys) {
+			std::set<int> a = edgeMap1.at(key);
+			std::set<int> b = edgeMap2.at(key);
+			a.insert(b.begin(), b.end());
+			edgeMap.insert({ key,a });
+		}
+
+
+		
+
+		
+		//select starting city
+		int startingCity = parent1[0];
+		//The offspring route
+		std::vector<int> newRoute;
+		newRoute.push_back(startingCity);
+		int minCity = startingCity;
+
+
+
+
+
+
+
+
+			while (newRoute.size() < dotcount) {
+
+
+				//Get the keyset from edgemap
+				std::vector<int> edgeMapKeys;
+				for (auto const& element : edgeMap) {
+					edgeMapKeys.push_back(element.first);
 				}
-				/*for (int nl = 0; nl < NNeighborLists.size(); nl++)
-				{
-				printVector(NNeighborLists[nl].second);
 
-				}*/
-				//Select shortest neighbor list
-				int currentsize = 100;
-				int chosen = 0;
-				for (int x = 0; x < NNeighborLists.size(); x++)
-				{
-					if (NNeighborLists[x].second.size() < currentsize)
-					{
-						currentsize = NNeighborLists[x].second.size();
-						chosen = x;
+
+
+
+
+				//Delete all edges leading to this from the initial map (edgeMapCopy)
+
+				for (int key : edgeMapKeys) {
+					std::set<int> cities = edgeMap[key];
+					if (cities.find(minCity) != cities.end()) {
+						cities.erase(cities.find(minCity));
+						edgeMap[key] = cities;
 
 					}
+				}
 
+				//Print the edge map
+				for (int key : edgeMapKeys) {
+					//std::cout << "city: " << key << " has edges to ";
+					auto cities = edgeMap[key];
+					for (int a : cities) {
+						//std::cout << a << " ";
+					}
+					//std::cout << "\n";
 				}
-				currentsize = 100;
-				City NStar = NNeighborLists[chosen].first;
-				N = NStar;
+
+
+
+
+				//List of the cities we can go to from this
+				std::set<int> cities = edgeMap[minCity];
+				
+				for (int i : cities) {
+					//std::cout << "Next cities: " << i << std::endl;
+				}
+				edgeMap.erase(minCity);
+				
+				//Map of all the neighbor sizes
+				std::map<int, int> neighborSizes;
+				for (int i : cities) {
+					neighborSizes.insert({ i,edgeMap[i].size() });
+					//std::cout << "Neighbor:" << i << " and their sizes: " << edgeMap[i].size() << std::endl;
+				}
+
+				//Find the neighbor with the least number of edges. Choose the first one this time
+				int minNeighbors = 5;
+				 minCity = -1;
+				for (const auto &myPair : neighborSizes) {
+					if (minNeighbors > myPair.second) {
+						minNeighbors = myPair.second;
+						minCity = myPair.first;
+
+					}
+				}
+				//std::cout << "MinCity: " << minCity << " and minNeigh: " << minNeighbors << std::endl;
+				newRoute.push_back(minCity);
+
+
+
 			}
-			else {
-				int random_slot = std::rand() % parent2.cintour.size();
-				City randomNeighbor = parent2.cintour[random_slot];
-				while (std::find(routePlaceholder.begin(), routePlaceholder.end(), randomNeighbor) == routePlaceholder.end())
-				{
-					random_slot = std::rand() % parent2.cintour.size();
-					randomNeighbor = parent2.cintour[random_slot];
+
+
+
+
+
+
+		std::vector<City> newTour;
+		for (int a : newRoute) {
+			for (City c : parent11.cintour) {
+				if (c.id == a) {
+					newTour.push_back(c);
 				}
-				City NStar = randomNeighbor;
-				N = NStar;
+				
+			}
+
+		}
+
+
+
+		
+
+		Tour finalTour(newTour);
+
+
+
+		//Add extras
+
+		if (finalTour.cintour.size() != parent11.cintour.size()) {
+			vector<int> missing;
+			auto currents = finalTour.ids();
+			std::vector<int> allints(parent11.cintour.size());
+			std::iota(allints.begin(), allints.end(), 0);
+			for (int i : currents) {
+				allints.erase(std::remove(allints.begin(), allints.end(), i), allints.end());
+				missing = allints;
+
+
+
+
+
+			}
+
+
+			for (int i : missing) {
+
+				for (City c: parent11.cintour) {
+
+					if (i == c.id) {
+						finalTour.cintour.push_back(c);
+					}
+
 
 			}
 
 		}
-		assert(isLegitRoute(Tour(routePlaceholder)));
-		newgen.push_back(Tour(routePlaceholder));
+
+
+
+
+		}
+
+
+
+		assert(isLegitRoute(finalTour));
+		auto candidate = finalTour;
+		bool isLegitCandidate = true;
+		for (int a = 0; a < newgen.size(); a++) {
+			if (candidate.cintour == newgen[a].cintour) {
+				isLegitCandidate = false;
+			}
+	
+
+		}
+		if (isLegitCandidate) {
+			newgen.push_back(candidate);
+		}
 	}
+	cout << "Edge recombination crossover done" << endl;
 
 };
-//Tekee adjasenssimatriisin
-std::vector<std::tuple<City, City, City>> generateAdjacencyMatrix(Tour tour)
-//ekan naapurit on kaksi seuraavaa: nykyinen, edellinen, seuraava
-{
-	auto cities = tour.cintour;
-	std::vector<std::tuple<City, City, City>> neighbors;
 
-	neighbors.push_back(std::make_tuple(cities[0], cities.back(), cities[1]));
-	for (int i = 1; i < cities.size() - 1; i++)
-	{
-		neighbors.push_back(std::make_tuple(cities[i], cities[i - 1], cities[i + 1]));
-	}
-	neighbors.push_back(std::make_tuple(cities.back(), cities[cities.size() - 2], cities[0]));
 
-	return neighbors;
-
-}
 //Order crossover.
 void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 {
@@ -245,17 +323,24 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 		Tour parent2 = auxtours[std::get<1>(parentPairs[g])];
 		assert(isLegitRoute(parent1));
 		assert(isLegitRoute(parent2));
-		int subsetLoLimit = rand() % dotcount - 1 + 1;
-		int subsetHiLimit = rand() % dotcount - 1 + 1;
 
-		if (subsetLoLimit > subsetHiLimit)
-		{
-			int templ = subsetLoLimit;
-			subsetLoLimit = subsetHiLimit;
-			subsetHiLimit = templ;
+		static constexpr double fraction{ 1.0 / (RAND_MAX + 1.0) };
+
+
+		int subsetLoLimit = static_cast<int>((parent1.size() ) * (std::rand() * fraction));
+
+		int subsetHiLimit = static_cast<int>((parent1.size() + 1) * (std::rand() * fraction));
+
+
+		while (subsetHiLimit >= parent1.size()) {
+			subsetHiLimit = static_cast<int>((parent1.size() + 1) * (std::rand() * fraction));
+		}
+		while (subsetLoLimit >= subsetHiLimit) {
+			subsetLoLimit = static_cast<int>((parent1.size()) * (std::rand() * fraction));
+			subsetHiLimit = static_cast<int>((parent1.size() + 1) * (std::rand() * fraction));
 		}
 
-		if (subsetLoLimit == subsetHiLimit) { subsetHiLimit += 2; }
+
 
 		//Parent 1 subset
 		std::vector<City> citiesInSubset;
@@ -268,15 +353,7 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 
 		//std::cout << "Constructing a new tour" << std::endl;
 		Tour newtour(citiesInSubset);
-		//newtour.printTour();
-		//std::cout << "Parent1: " << std::endl;
-		//parent1.printTour();
-		//std::cout << "Parent2: " << std::endl;
-		//parent2.printTour();
-		//std::vector<int> points;
-		//std::cout << "First and last cut elements: " << parent2.cintour[subsetLoLimit].id << "and " << parent2.cintour[subsetHiLimit-1].id << std::endl;
-		//std::cout << "Parent 2-mukaiseen jarjestykseen:" << std::endl;
-		//std::cout << "P2-alkupiste: " << parent2.cintour[subsetHiLimit].id<< std::endl;
+
 		//Tehdään uudelleenjärjestelty parent2-vektori, jossa siis loppuosa, alkuosa, cut;
 		std::vector<City> parent2rorder;
 		for (int a = subsetHiLimit; a < parent2.size(); a++)
@@ -290,11 +367,6 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 		Tour rordertour(parent2rorder);
 		assert(isLegitRoute(rordertour));
 
-		//std::cout << "debuggausta1" << std::endl;
-		//std::cout << "Reordered p2: " << std::endl;
-		//printVector(rordertour.ids());
-		//std::cout << "current newtour: " << std::endl;
-		//printVector(newtour.ids());
 
 		//Käydään läpi loppuvektori. Jokainen slotti: Jos tämä löytyy cutista, edetään p2rorderia yks eteenpäin. Jos ei löydy, lisätään cuttiin. Poistetaan reorderedin eka elementti aina.
 		int count = 0;
@@ -354,10 +426,25 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 
 		}
 
+
 		assert(isLegitRoute(newtour));
-		newgen.push_back(newtour);
+
+		auto candidate = newtour;
+		bool isLegitCandidate = true;
+		for (int a = 0; a < newgen.size(); a++) {
+			if (candidate.cintour == newgen[a].cintour) {
+				isLegitCandidate = false;
+			}
+
+		}
+		if (isLegitCandidate) {
+			newgen.push_back(candidate);
+		}
+
+
 	}
 
+	assert(areLegitTours(newgen));
 	std::cout << "Order crossover ready" << std::endl;
 
 
@@ -376,12 +463,27 @@ void crossover(std::string identifier, std::vector<std::pair<int, int>> parentPa
 std::vector<std::pair<int, int>> getParentPairs(int gensize)
 {
 	std::vector<std::pair<int, int>> parentPairs;
-	for (int i = 0; i < gensize; i++)
+	static constexpr double fraction{ 1.0 / (RAND_MAX + 1.0) };
+
+
+
+	while (parentPairs.size()<gensize) 
 	{
-		int p1 = rand() % gensize;
-		int p2 = rand() % gensize;
-		parentPairs.push_back(std::make_pair(p1, p2));
-		//std::cout << p1 << '+' << p2 <<  std::endl;
+
+		int p1 = 0;
+		int p2 = 0;
+		while (p1 == p2) {
+			 p1 = static_cast<int>((auxtours.size()) * (std::rand() * fraction));
+			 p2 = static_cast<int>((auxtours.size()) * (std::rand() * fraction));
+			 
+			
+		}
+		if (!(std::find(parentPairs.begin(), parentPairs.end(), std::make_pair(p1, p2))
+			!= parentPairs.end())) {
+
+
+			parentPairs.push_back(std::make_pair(p1, p2));
+		}
 	}
 	return parentPairs;
 
@@ -456,8 +558,12 @@ std::vector<std::tuple<int, int, int>> all_segments(int N)
 //Initiate threeopt mutate
 void threeOptMutate()
 {
+
+	std::cout << "3-opt hillclimb in progress" << std::endl;
+	#pragma omp parallel for schedule(static,1)
 	for (int i = 0; i < newgen.size(); i++) {
 		newgen[i] = threeOpt(newgen[i]);
+		cout << " Done " << i+1 << " of " << newgen.size() << endl;
 	}
 
 
@@ -466,7 +572,6 @@ void threeOptMutate()
 Tour threeOpt(Tour currentTour)
 {
 	auto rettour = currentTour;
-	std::cout << "3-opt hillclimb in progress" << std::endl;
 	auto start = std::chrono::steady_clock::now();
 	int N = rettour.cintour.size();
 
@@ -490,7 +595,7 @@ Tour threeOpt(Tour currentTour)
 
 	}
 	auto end = std::chrono::steady_clock::now();
-	std::cout << "Elapsed time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds." << std::endl;
+	std::cout << "Elapsed time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds.";
 
 	return rettour;
 }
@@ -498,9 +603,11 @@ Tour threeOpt(Tour currentTour)
 void twoOptMutate()
 {
 	std::cout << "2-opt hillclimb in progress" << std::endl;
-
+	#pragma omp parallel for schedule(static,1)
 	for (int i = 0; i < newgen.size(); i++) {
 		newgen[i] = twoOpt(newgen[i]);
+		cout << " Done " << i << " of " << newgen.size() << endl;
+		
 	}
 
 
@@ -544,7 +651,7 @@ Tour twoOpt(Tour currentTour)
 
 
 	auto end = std::chrono::steady_clock::now();
-	std::cout << "Elapsed time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds." << std::endl;
+	std::cout << "Elapsed time: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " milliseconds.";
 
 	return restour;
 
@@ -559,19 +666,83 @@ void swapMutate(float mutationrate)
 	for (int i = 0; i < generationSize; i++) {
 		for (int s = 0; s < swaps; s++);
 		{
-			int pos1 = rand() % 19 + 1;
-			int pos2 = rand() % 19 + 1;
+			int pos1 = rand() % newgen[0].size();
+			int pos2 = rand() % newgen[0].size();
 			std::iter_swap(newgen[i].cintour.begin() + pos1, newgen[i].cintour.begin() + pos2);
 		}
 	}
 }
+
+
+//Routine for scramble mutate
+void scrambleMutate(float mutationrate)
+{
+	int subsetLength = std::max((int)floor(mutationrate*newgen[0].size()), 1);
+	for (auto tour : newgen) {
+		//cout << "First: " << tour.representation() << endl;
+		int start = rand() % newgen[0].size();
+		auto rng = std::default_random_engine{};
+
+		//If wraps around
+		if (start + subsetLength > newgen[0].size()) {
+			vector<City> backportion(tour.cintour.begin()+start,tour.cintour.end());
+			vector<City> frontportion(tour.cintour.begin(), tour.cintour.begin() +subsetLength-backportion.size() );
+			vector<City> midportion(tour.cintour.begin() + subsetLength - backportion.size(), tour.cintour.begin() + start);
+
+			vector<City> combinePlaceholder;
+			combinePlaceholder.reserve(newgen[0].size() - subsetLength);
+			combinePlaceholder.insert(combinePlaceholder.end(), backportion.begin(), backportion.end());
+			combinePlaceholder.insert(combinePlaceholder.end(), frontportion.begin(), frontportion.end());
+
+
+			std::shuffle(std::begin(combinePlaceholder), std::end(combinePlaceholder), rng);
+			std::copy_n(combinePlaceholder.begin(), backportion.size(), &tour.cintour[start]);
+			std::copy_n(combinePlaceholder.begin()+backportion.size(), frontportion.size(), &tour.cintour[0]);
+		}
+		else {
+			std::shuffle(tour.cintour.begin() + start, tour.cintour.begin() + subsetLength+start,rng);
+		}
+
+		//cout << "Last: " << tour.representation() << endl;
+	}
+
+}
+
 //Mutation method chooser
 void mutate(std::string identifier, float mutationrate)
 {
 	std::cout << "Mutation underway. Chosen mutation method: " << identifier << std::endl;
 	if (identifier == "swap") { swapMutate(mutationrate); }
+	if (identifier == "scramble") { scrambleMutate(mutationrate); }
 	if (identifier == "2opt") { twoOptMutate(); }
 	if (identifier == "3opt") { threeOptMutate(); }
+
+
+}
+
+bool averageChangeStopper(vector<Tour> oldgen, vector<Tour> newgen) {
+	
+	double oldavg = 0;
+	double newavg = 0;
+
+	for (int i = 0; i < oldgen.size(); i++) {
+		oldavg += oldgen[i].dist;
+	}
+
+	for (int i = 0; i < newgen.size(); i++) {
+		newavg += newgen[i].dist;
+	}
+
+	oldavg = oldavg / oldgen.size()*1.0;
+	newavg = newavg / newgen.size()*1.0;
+
+	if (newavg/oldavg > 0.98) {
+		cout << "ratio:" << newavg / oldavg << endl;
+		cout << "New avg: " << newavg << endl;
+		cout << "Old avg: " << oldavg << endl;
+		return true;
+	}
+	return false;
 
 
 }
