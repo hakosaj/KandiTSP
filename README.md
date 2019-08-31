@@ -23,6 +23,13 @@ Compile all the files with g++, using compiler flags:
 -march=native
 
 
+Then simply run the file, the software tells you what to do!
+
+In order to use further instances, those can be downloaded here for example: https://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+
+Make sure to format them to csv, same format as the other files!
+
+
 ## Authors
 
 * **Jussi Hakosalo** - *All of it* - [hakosaj](https://github.com/hakosaj)
