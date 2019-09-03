@@ -2,6 +2,11 @@
 
 As a part of my Bachelor's thesis, I made a simulation for doing TSP with Genetic Algorithms. Feel free to use and improve!
 
+![Overview of the simulation]((https://github.com/hakosaj/KandiTSP/simulation.PNG)]("Overview")
+
+
+
+
 ## Getting Started
 
 Simply clone the repository to a directory, compile and we are good to go! Makefile still needs to be done. 
