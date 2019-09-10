@@ -38,6 +38,7 @@ Make sure to format them to csv, same format as the other files!
 
   - Refactor the 2-opt swap procedure to correspond that of the 3-opt to optimize the performance
   - LKH implementation!
+  . Makefile
 
 
 ## Authors
