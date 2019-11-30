@@ -13,19 +13,12 @@ Simply clone the repository to a directory, compile and we are good to go! Makef
 
 ### Prerequisites
 
-
--Windows 10! (Sorry, the current version is built around Windows libraries)
-
 -SFML, at least version 2.5.1.
 
 
 ## Using the software
 
-Compile all the files with g++, using compiler flags:
--fopenmp
--Wall
--O3
--march=native
+Get the software from Github and simply make in the folder.
 
 
 Then simply run the file, the software tells you what to do!
@@ -38,7 +31,7 @@ Make sure to format them to csv, same format as the other files!
 
   - Refactor the 2-opt swap procedure to correspond that of the 3-opt to optimize the performance
   - LKH implementation!
-  . Makefile
+  - GPU-computation
 
 
 ## Authors
