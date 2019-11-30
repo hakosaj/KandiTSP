@@ -4,7 +4,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
-#include <Windows.h> 
+//#include <Windows.h> 
 #include <string>
 #include <chrono>
 #include <time.h> 
@@ -21,6 +21,7 @@
 #include "Constants.h"
 #include <random>
 #include <omp.h>
+#include <unistd.h>
 
 
 int main()
@@ -144,7 +145,7 @@ int main()
 				if (buttonPressed(printBestRoutesButton, event))
 				{
 					printBestRoutesButton.setFillColor(sf::Color::Green);
-					printBestRoutes(tours);
+					//printBestRoutes(tours);
 
 				}
 
@@ -301,7 +302,8 @@ int main()
 
 		//asdsad
 		//Draw gridlines here
-		for (int a = 0; a < size(gridlinesVertical); a++)
+		//for (int a = 0; a < size(gridlinesVertical); a++)
+		for (int a = 0; a < gridlinesVertical.size(); a++)
 		{
 
 			window.draw(sfLine(sf::Vector2f(gridlinesHorizontal[0], gridlinesVertical[a] + 50), sf::Vector2f(gridlinesHorizontal[2], gridlinesVertical[a] + 50)));
@@ -393,7 +395,8 @@ int main()
 		CurrentPopulationNumberText.setString(std::to_string(popsize));
 		window.draw(CurrentPopulationNumberText);
 		if (RandomizeStatus) {
-			Sleep(randomizeSleep);
+			//Sleep(randomizeSleep);
+			usleep(randomizeSleep*1000);
 			currentTour = randomizeRoute(currentTour);
 		}
 

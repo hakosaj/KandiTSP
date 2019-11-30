@@ -5,7 +5,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
-#include <Windows.h> 
+//#include <Windows.h> 
 #include <omp.h>
 #include <string>
 #include <chrono>
@@ -20,7 +20,7 @@
 #include <fstream>
 #include <utility>
 #include <queue>
-#include <concurrencysal.h>
+//#include <concurrencysal.h>
 #include <numeric>
 #include "Constants.h"
 #include "InitializeFunctions.h"
@@ -71,7 +71,7 @@ std::vector<std::vector<int>> readCsv()
 		std::cin >> fileEnd;
 	}
 
-	std::string fileName = "C:\\Users\\jh\\Desktop\\Kandi\\VisualSFMLtesti1\\VisualSFMLtesti1\\Data\\"+fileEnd+".csv";
+	std::string fileName = "Data/"+fileEnd+".csv";
 	std::cout << "File read. Path to file: " << fileName << std::endl;
 	std::vector<std::vector<int>> fields;
 
@@ -164,7 +164,7 @@ void runAlgorithm(Tour currenttour, int gens, std::string selecting, std::string
 		while (tours.size()<generationSize)
 		//while (tours.size()<generationSize || !areLegitTours(tours))
 			{ randomizeRoute(currenttour);
-			cout << "Perusarvonta. Miten tässä voi kusta?" << endl;
+			cout << "Perusarvonta. Miten tï¿½ssï¿½ voi kusta?" << endl;
 			}
 		
 		for (int i = 0; i < gens; i++) {
@@ -400,7 +400,7 @@ void rouletteSelection(int gensize)
 			}
 		}
 		catch (const std::exception& e) {
-			cout << "Kaikki käyty läpi. Fuck." << endl;
+			cout << "Kaikki kï¿½yty lï¿½pi. Fuck." << endl;
 
 		}
 
@@ -425,7 +425,7 @@ void nextGeneration(int gensize, float mutationrate,std::string selecting, std::
 {
 	newgen.clear();
 	auto copyt = tours;
-	//Selectja parentpairs: käyttää tours-reittivektoria-> auxtours-reittivektori
+	//Selectja parentpairs: kï¿½yttï¿½ï¿½ tours-reittivektoria-> auxtours-reittivektori
 	//assert(areLegitTours(tours));
 
 	select(selecting, generationSize);
@@ -449,7 +449,7 @@ void nextGeneration(int gensize, float mutationrate,std::string selecting, std::
 
 	crossover(crossovering, parentPairs);
 	assert(areLegitTours(newgen));
-	//Mutate käyttää newgeniä
+	//Mutate kï¿½yttï¿½ï¿½ newgeniï¿½
 	mutate(mutating, mutationrate);
 
 

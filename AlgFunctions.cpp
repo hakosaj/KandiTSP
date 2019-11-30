@@ -5,7 +5,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
-#include <Windows.h> 
+//#include <Windows.h> 
 #include <omp.h>
 #include <string>
 #include <chrono>
@@ -20,7 +20,7 @@
 #include <fstream>
 #include <utility>
 #include <queue>
-#include <concurrencysal.h>
+//#include <concurrencysal.h>
 #include <numeric>
 #include "Constants.h"
 #include "Objects.h"
@@ -56,7 +56,7 @@ void rankedSelection(int gensize)
 			ind++;
 		}
 		catch (const std::exception& e) {
-			cout << "Kaikki käyty läpi. Fuck." << endl;
+			cout << "Kaikki kï¿½yty lï¿½pi. Fuck." << endl;
 
 		}
 
@@ -105,7 +105,7 @@ void edgeRecombinationCrossover(std::vector<std::pair<int, int>> parentPairs)
 		std::map<int, std::set<int>> edgeMap1;
 		std::map<int, std::set<int>> edgeMap2;
 		std::map<int, std::set<int>> edgeMap;
-		//tämä;edellinen,seruaava
+		//tï¿½mï¿½;edellinen,seruaava
 
 		//Add parent1 first and last
 		edgeMap1.insert({ parent1[0],{parent1.back(),parent1[1]} });
@@ -354,7 +354,7 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 		//std::cout << "Constructing a new tour" << std::endl;
 		Tour newtour(citiesInSubset);
 
-		//Tehdään uudelleenjärjestelty parent2-vektori, jossa siis loppuosa, alkuosa, cut;
+		//Tehdï¿½ï¿½n uudelleenjï¿½rjestelty parent2-vektori, jossa siis loppuosa, alkuosa, cut;
 		std::vector<City> parent2rorder;
 		for (int a = subsetHiLimit; a < parent2.size(); a++)
 		{
@@ -368,7 +368,7 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 		assert(isLegitRoute(rordertour));
 
 
-		//Käydään läpi loppuvektori. Jokainen slotti: Jos tämä löytyy cutista, edetään p2rorderia yks eteenpäin. Jos ei löydy, lisätään cuttiin. Poistetaan reorderedin eka elementti aina.
+		//Kï¿½ydï¿½ï¿½n lï¿½pi loppuvektori. Jokainen slotti: Jos tï¿½mï¿½ lï¿½ytyy cutista, edetï¿½ï¿½n p2rorderia yks eteenpï¿½in. Jos ei lï¿½ydy, lisï¿½tï¿½ï¿½n cuttiin. Poistetaan reorderedin eka elementti aina.
 		int count = 0;
 		for (int a = subsetHiLimit; a < parent2.size(); a++)
 		{
@@ -389,7 +389,7 @@ void orderCrossover(std::vector<std::pair<int, int>> parentPairs)
 		}
 
 
-		//Käydään läpi alkuvektori. Jokainen slotti: Jos tämä löytyy cutista, edetään p2rorderia yks eteenpäin. Jos ei löydy, lisätään cuttiin. Poistetaan reorderedin eka elementti aina.
+		//Kï¿½ydï¿½ï¿½n lï¿½pi alkuvektori. Jokainen slotti: Jos tï¿½mï¿½ lï¿½ytyy cutista, edetï¿½ï¿½n p2rorderia yks eteenpï¿½in. Jos ei lï¿½ydy, lisï¿½tï¿½ï¿½n cuttiin. Poistetaan reorderedin eka elementti aina.
 		int insertIterator = 0;
 		for (int a = subsetLoLimit; a > 0; a--)
 		{
@@ -459,7 +459,7 @@ void crossover(std::string identifier, std::vector<std::pair<int, int>> parentPa
 
 
 }
-//Ottaa tietyt kaksi reittiä gensizestä, yhdistää nämä pareiksi
+//Ottaa tietyt kaksi reittiï¿½ gensizestï¿½, yhdistï¿½ï¿½ nï¿½mï¿½ pareiksi
 std::vector<std::pair<int, int>> getParentPairs(int gensize)
 {
 	std::vector<std::pair<int, int>> parentPairs;

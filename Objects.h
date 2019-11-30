@@ -7,7 +7,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
-#include <Windows.h> 
+//#include <Windows.h> 
 #include <string>
 #include <numeric>
 #include <queue>
@@ -30,10 +30,10 @@ extern std::vector<Tour> auxtours;
 extern std::vector<Tour> newgen;
 
 
-/*Uuden napin lisääminen:
-1) Lisää Objects.h Button Texts-kohtaan tekstiolio: MyFunctionButtonText
-2) Lisää Objects.h Button shapes- kohtaan rectangle nimellä MyFunctionButton. sitten objects.cpp
-3) Lisää mainiin InitializeButtonTexts-funktioon kohta, jossa teksti ja sijainti
+/*Uuden napin lisï¿½ï¿½minen:
+1) Lisï¿½ï¿½ Objects.h Button Texts-kohtaan tekstiolio: MyFunctionButtonText
+2) Lisï¿½ï¿½ Objects.h Button shapes- kohtaan rectangle nimellï¿½ MyFunctionButton. sitten objects.cpp
+3) Lisï¿½ï¿½ mainiin InitializeButtonTexts-funktioon kohta, jossa teksti ja sijainti
 4) InitializeShapesiin Button positions-kohtaan suorakulmion sijainti
 5) Mainiin event listeneriin referenssi uuteen nappiin
 6) Mainiin window.draw()-komento MyFunctionButton ja MyFunctionButtonText

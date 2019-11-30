@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Constants.h"
+#include <cmath>
 
 //Class for drawing sf lines
 class sfLine : public sf::Drawable

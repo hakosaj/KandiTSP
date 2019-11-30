@@ -5,7 +5,7 @@
 #include <ctime>
 #include <algorithm>
 #include <vector>
-#include <Windows.h> 
+//#include <Windows.h> 
 #include <omp.h>
 #include <string>
 #include <chrono>
@@ -20,7 +20,7 @@
 #include <fstream>
 #include <utility>
 #include <queue>
-#include <concurrencysal.h>
+//#include <concurrencysal.h>
 #include <numeric>
 #include "Constants.h"
 #include "InitializeFunctions.h"
