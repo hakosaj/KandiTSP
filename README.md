@@ -9,7 +9,7 @@ As a part of my Bachelor's thesis, I made a simulation for doing TSP with Geneti
 
 ## Getting Started
 
-Simply clone the repository to a directory, compile and we are good to go! Makefile still needs to be done. 
+Simply clone the repository to a directory, compile and we are good to go! 
 
 ### Prerequisites
 
